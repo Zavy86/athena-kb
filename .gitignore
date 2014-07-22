@@ -1,0 +1,8 @@
+# ignore configuration file
+config.inc.php
+
+# ignore project directory
+/nbproject/
+
+# Never ignore index.php files
+!index.php
