@@ -1,14 +1,5 @@
 # Athena Knowledge Base
 
-        __..._   _...__
-   _..-"      `Y`      "-._
-   \           |           /
-   \\          |          //
-   \\\         |         ///
-    \\\ _..---.|.---.._ ///
-     \\`_..---.Y.---.._`//
-      '`               `'
-
 - Website - [http://www.athena-kb.org](http://www.athena-kb.org)
 - GitHub project - [https://github.com/Zavy86/athena-kb](https://github.com/Zavy86/athena-kb)
 
