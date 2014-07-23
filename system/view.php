@@ -1,7 +1,7 @@
 <?php
 
 class View{
- 
+
  private $buffer;
  private $template;
  private $view;
@@ -10,39 +10,37 @@ class View{
 
  public function __construct($view,$template){
   // check if template exist
-  if(!file_exists(TEMPLATE.$template.".php")){
-   //ChromePhp::warn("Template '".TEMPLATE.$template.".php' not found, load default template");
+  if(file_exists(ROOT.TEMPLATE.$template.".php")){
+   $_SESSION['log'][]=array("log","Template to load: ".$template);
+  }else{
+   $_SESSION['log'][]=array("warn","Template to load:'".ROOT.TEMPLATE.$template.".php' not found, load default template");
    $template="default";
   }
-  //ChromePhp::log("Template to load: ".$template);
-  $this->template=TEMPLATE.$template.".php";
+  $this->template=ROOT.TEMPLATE.$template.".php";
   // check if view exist
-  if(file_exists(MODULES.MODULE."/views/".$view.".php")){
-   //ChromePhp::log("View to load: ".MODULES.MODULE."/views/".$view.".php");
-   $this->view=MODULES.MODULE."/views/".$view.".php";
-  }elseif(file_exists(TEMPLATE.$view.".php")){
-   //ChromePhp::log("View to load: ".TEMPLATE.$view.".php");
-   $this->view=TEMPLATE.$view.".php";
+  if(file_exists(VIEWS.$view.".php")){
+   $_SESSION['log'][]=array("log","View to load: ".VIEWS.$view.".php");
+   $this->view=VIEWS.$view.".php";
   }else{
-   //ChromePhp::warn("View '".MODULES.MODULE."/views/".$view.".php' not found");
-   $this->view=TEMPLATE."not-found.php";
+   $_SESSION['log'][]=array("error","View to load: ".VIEWS.$view.".php not found, load default view");
+   $this->view=VIEWS."not-found.php";
   }
-  
+
   // --- load sections ---
   global $settings;
   $this->sections=$settings['sections'];
-  
+
  }
 
  public function setSection($section,$val){
   $this->sections[$section]=$val;
  }
- 
+
  public function setVariable($variable,$val){
   $this->variables[$variable]=$val;
  }
- 
- function parseFile($file_path){
+
+ /*function parseFile($file_path){
   //
   extract($this->variables);
   //
@@ -62,7 +60,7 @@ class View{
   }
   return $widget;
  }
- 
+
  function parseSections($sections=array()){
   //
   if(count($sections)>0){
@@ -74,7 +72,7 @@ class View{
      $data=array();
      $data[]=$tmp;
     }
-    // 
+    //
     foreach($data as $item){
      if(file_exists(WIDGETS.$item.".php")){
       $content.=$this->parseFile(WIDGETS.$item.".php");
@@ -88,38 +86,57 @@ class View{
     $this->buffer=str_replace("<!--[section=".$section."]-->",$content,$this->buffer);
    }
   }
- }
- 
+ }*/
+
  public function render(){
-  //
+  // gloabl variables
+  //global $config;
   global $settings;
   extract($settings);
+
   //
   extract($this->variables);
   //
   ob_start();
-  include($this->template);
+  //include($this->template);
+  include(ROOT.TEMPLATE."headers.php");
+
+  // show debug logs
+  if($_SESSION['debug']){
+   echo "<div id='debug'>\n <pre>\n";
+   foreach($_SESSION['log'] as $log){echo "<code class='".$log[0]."'>".$log[1]."</code>\n";}
+   echo "  </pre>\n</div>\n";
+  }
+
+  include($this->view);
+  include(ROOT.TEMPLATE."footer.php");
   $this->buffer=ob_get_contents();
   ob_end_clean();
+
   //
-  $content="<div id=\"content\">\n".$this->parseFile($this->view)."\n</div>\n";
-  $this->buffer=str_replace("<!--[section=content]-->",$content,$this->buffer);
-  
+  $this->buffer=str_replace(array_keys($GLOBALS['locale']),array_values($GLOBALS['locale']),$this->buffer);
+
+
   //
-  $navigation="<ul>\n";
-  foreach($settings['navigation'] as $navigation_item){
-   $navigation.="<li><a href=".$navigation_item[1].">".$navigation_item[0]."</a></li>\n";
-  }
-  $navigation.="</ul>\n";
-  
-  $this->sections['navigation']=$navigation;
-  
-  // 
-  $this->parseSections($this->sections);
+  //$content="<div id=\"content\">\n".$this->parseFile($this->view)."\n</div>\n";
+  //$this->buffer=str_replace("<!--[section=content]-->",$content,$this->buffer);
+
+  //
+  //$navigation="<ul>\n";
+  //foreach($settings['navigation'] as $navigation_item){
+   //$navigation.="<li><a href=".$navigation_item[1].">".$navigation_item[0]."</a></li>\n";
+  //}
+  //$navigation.="</ul>\n";
+
+  //$this->sections['navigation']=$navigation;
+
+  //
+  //$this->parseSections($this->sections);
+
   // show rendered template
   echo $this->buffer;
  }
- 
+
 }
 
 ?>

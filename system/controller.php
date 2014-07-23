@@ -3,14 +3,26 @@
 class Controller{
 
  public function main(){
-		$view=$this->loadView();
+  $view=$this->loadView();
   $view->render();
  }
 
- public function loadModel(){
-  require(MODULES.MODULE."/model.php");
-  $model=MODULE."Model";
-  $return=new $model;
+ public function redirect($location){
+  header("Location: ".URL.$location);
+ }
+
+ public function loadModel($model=NULL){
+  // require model if exist
+  if(file_exists(MODELS.$model.".php")){
+   $_SESSION['log'][]=array("log","Model to load: ".MODELS.$model.".php");
+   require_once(MODELS.$model.".php");
+   $model=$model."Model";
+   $return=new $model;
+  }else{
+   $_SESSION['log'][]=array("error","Model to load: ".MODELS.$model.".php was not found");
+   $return=FALSE;
+  }
+
   return $return;
  }
 
@@ -19,10 +31,6 @@ class Controller{
   return $view;
  }
 
- public function redirect($location){
-  header("Location: ".URL.$location);
- }
- 
 }
 
 ?>

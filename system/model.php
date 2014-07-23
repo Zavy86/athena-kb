@@ -18,6 +18,11 @@ class Model{
   }
  }
 
+ public function __call($method,$args){
+  $args=implode(",",$args);
+  $_SESSION['log'][]=array("warn","Method ".$method."(".$args.") was not found in ".get_class($this)." class");
+ }
+
  public function escapeString($string){
   return mysql_real_escape_string($string);
  }

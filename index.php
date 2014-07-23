@@ -4,11 +4,11 @@
 
      Athena Knowledge Base
 
-        __..._   _...__
-   _..-"      `Y`      "-._
-   \           |           /
-   \\          |          //
-   \\\         |         ///
+        __..._   _.-.__
+   _..-"      `Y` | |  "-._
+   \           |  | |      /
+   \\          |  | |     //
+   \\\         |   V     ///
     \\\ _..---.|.---.._ ///
      \\`_..---.Y.---.._`//
       '`               `'
@@ -17,77 +17,105 @@
 
 */
 
-session_start();
+ session_start();
+
+ $_SESSION['log']=array();
 
  // defines
  global $config;
  global $settings;
 
+ $_SESSION['debug']=true;
+ //$_SESSION['debug']=false;
+
  // acquire variables
- $module=$_REQUEST['module'];
  $controller=$_REQUEST['controller'];
  $action=$_REQUEST['action'];
 
  // include configuration
  require("config.inc.php");
 
- // only for debug
- //ChromePhp::log($_SERVER);
-
- // check module
- if(!strlen($module)>0){$module=$config['default-module'];}
- //ChromePhp::log("Module to load: ".$module);
-
  // defines constants
+ define('URL',$config['url']);
  define('ROOT',realpath(dirname(__FILE__))."/");
  define('HELPERS',ROOT."helpers/");
- define('MODULES',ROOT."modules/");
- define('WIDGETS',ROOT."widgets/");
- define('TEMPLATE',ROOT."templates/".$config['template']."/");
- define('URL',$config['url']);
- define('MODULE',$module);
+ define('SYSTEM',ROOT."system/");
+ define('MODELS',ROOT."models/");
+ define('VIEWS',ROOT."views/");
+ define('CONTROLLERS',ROOT."controllers/");
+ define('LANGUAGES',ROOT."languages/");
+ //define('TEMPLATE',"templates/".$config['template']."/");
+ define('TEMPLATE',"template/");
 
  // includes system classes
- require(ROOT."system/model.php");
- require(ROOT."system/view.php");
- require(ROOT."system/controller.php");
+ require(SYSTEM."model.php");
+ require(SYSTEM."view.php");
+ require(SYSTEM."controller.php");
 
  // get settings from db
  //$settings="SELECT * FROM core_settings":
  // --- temporary manual settings setup ---
- $settings['fw-title']="PHP-Framework";
+ $settings['fw-title']="Athena Knowledge Base";
  $settings['fw-version']="1.0";
 
- $settings['navigation']=array(
+ /*$settings['navigation']=array(
   array("home",URL),
-  array("helloworld",URL."?module=helloworld")
+  array("random",URL."?controller=view&content=random"),
+  array("create",URL."?controller=edit&action=add")
  );
 
- $settings['sections']['sidebar'][]="quotes";
+ $settings['sections']['sidebar'][]="logo";
+ $settings['sections']['sidebar'][]="navigation";
+ //$settings['sections']['sidebar'][]="quotes";
  $settings['sections']['footer'][]="copyright";
- // ------
+ // ------*/
+
+ // load language file
+ $language=$_SESSION['language'];
+ if(file_exists(LANGUAGES.$language.".xml")){
+  // load selected locale file
+  $xml=simplexml_load_file(LANGUAGES.$language.".xml");
+ }elseif(file_exists(LANGUAGES."default.xml")){
+  // load deafult locale file
+  $xml=simplexml_load_file(LANGUAGES."default.xml");
+ }
+ if($xml<>NULL){
+  $GLOBALS['locale']=array();
+  foreach($xml->text as $text_xml){
+   $key="{".(string)$text_xml['key']."}";
+   $GLOBALS['locale'][$key]=(string)$text_xml;
+  }
+ }
 
  // require controller if exist
- if(file_exists(MODULES.MODULE."/".$controller.".php")){
-  //ChromePhp::log("Controller to load: ".MODULE."/".$controller.".php");
-  require(MODULES.MODULE."/".$controller.".php");
- }elseif(file_exists(MODULES.MODULE."/controller.php")){
-  //ChromePhp::log("Controller to load: ".MODULE."/controller.php");
-  require(MODULES.MODULE."/controller.php");
-  $controller=MODULE;
+ if(file_exists(CONTROLLERS."/".$controller.".php")){
+  $_SESSION['log'][]=array("log","Controller to load: ".CONTROLLERS.$controller.".php");
+  require(CONTROLLERS."/".$controller.".php");
+  define('CONTROLLER',$controller);
+  $controller_class=$controller."Controller";
  }else{
-  // load default controller
-  //ChromePhp::log("Controller to load: controller.php");
-  $controller=NULL;
+  if($controller<>NULL){
+   $_SESSION['log'][]=array("error","Controller to load: ".CONTROLLERS.$controller.".php was not found");
+  }
+  $_SESSION['log'][]=array("log","Controller to load: ".CONTROLLERS."controller.php");
+  define('CONTROLLER',"controller");
+  $controller_class="Controller";
  }
- $controller.="Controller";
+
 
  // check the action exists
- if(!method_exists($controller,$action)){$action='main';}
- //ChromePhp::log("Action method to call: ".$action."");
+ if(method_exists($controller_class,$action)){
+  $_SESSION['log'][]=array("log","Action method to call: ".$action);
+  define('ACTION',$action);
+ }else{
+  if($action<>null){$_SESSION['log'][]=array("warn","Method ".$action."() was not found in ".$controller_class." class");}
+  $_SESSION['log'][]=array("log","Action method to call: main");
+  define('ACTION',"main");
+  $action="main";
+ }
 
  // Create object and call method
- $object=new $controller;
+ $object=new $controller_class;
  die(call_user_func(array($object,$action)));
  //die(call_user_func_array(array($object,$action),$_SERVER['REQUEST_URI']));
 

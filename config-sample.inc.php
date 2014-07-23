@@ -1,11 +1,9 @@
 <?php
  
- $config['debug']=TRUE; // show debug informations
-
  $config['url']="/athena-kb/"; // base url including trailing slash example: http://localhost/
- 
+
  $config['template']="default";
- 
+
  $config['default-module']=NULL; // define default module to load
 
  // Database
