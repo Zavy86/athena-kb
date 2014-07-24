@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="<?php echo URL; ?>helpers/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="<?php echo URL; ?>helpers/bootstrap/css/bootstrap-theme.min.css" type="text/css" media="screen" />
 
-  <title><?php echo $settings['fw-title']; ?></title>
+  <title><?php echo $settings->title; ?></title>
 
  </head>
 
@@ -34,13 +34,13 @@
        <span class="icon-bar"></span>
        <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="<?php echo URL; ?>"><?php echo $settings['fw-title']; ?></a>
+      <a class="navbar-brand" href="<?php echo URL; ?>"><?php echo $settings->title; ?></a>
      </div>
 
      <div class="navbar-collapse collapse">
 
       <ul class="nav navbar-nav">
-       <li<?php if(CONTROLLER==SYSTEM."controller.php"&&ACTION=="main"){echo " class='active'";} ?>><a href="<?php echo URL; ?>"><small class="glyphicon glyphicon-home"></small>&nbsp; {nav-index}</a></li>
+       <li<?php if(CONTROLLER=="view"&&ACTION=="index"){echo " class='active'";} ?>><a href="?controller=view&action=index"><small class="glyphicon glyphicon-home"></small>&nbsp; {nav-index}</a></li>
        <li><a href="?controller=view&content=random"><small class="glyphicon glyphicon-random"></small>&nbsp; {nav-random}</a></li>
 
        <?php if($content->id){ ?>

@@ -18,19 +18,37 @@ class contentModel extends Model {
    if($_GET['idContent']>0){
     $id=$_GET['idContent'];
    }elseif($_GET['content']=="random"){
-    $id=rand(1,10);
+    $id=rand(1,$this->count("contents"));
    }
   }
 
-  $this->id=$id;
-  $this->title="title $id from db";
-  $this->content="content $id from db";
+  $content=$this->queryUniqueObject("SELECT * FROM `contents` WHERE `id`='".$id."'");
+
+  $this->id=$content->id;
+  $this->title=$content->title;
+  $this->content=$content->content;
+ }
+
+ function loadAll(){
+  $contents=$this->queryObjects("SELECT * FROM `contents` ORDER BY `title` ASC");
+  return $contents;
  }
 
  function update(){
-  $this->id=$_POST['id'];
-  $this->title=$_POST['title'];
-  $this->content=$_POST['content'];
+  $content=new stdClass();
+  $content->id=$_POST['id'];
+  $content->title=$_POST['title'];
+  $content->content=$_POST['content'];
+  if($content->id>0){
+   return $this->queryUpdate("contents",$content);
+  }else{
+   return $this->queryInsert("contents",$content);
+  }
+ }
+
+ function delete(){
+  $idContent=$_GET['idContent'];
+  return $this->queryDelete("contents",$idContent);
  }
 
 }

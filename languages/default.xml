@@ -51,4 +51,11 @@
  <text key="form-range-from">From</text>
  <text key="form-range-to">To</text>
 
+ <!-- index -->
+ <text key="index-title">Title</text>
+
+ <!-- edit -->
+ <text key="edit-title">Page title</text>
+ <text key="edit-content">Content of page</text>
+
 </locale>

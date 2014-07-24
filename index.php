@@ -19,14 +19,16 @@
 
  session_start();
 
- $_SESSION['log']=array();
+ // if not redirected reset log session array
+ if($_SESSION['redirect']<>TRUE){$_SESSION['log']=array();}else{$_SESSION['redirect']=FALSE;}
+ $_SESSION['log'][]=array("log","Logs from: ?".$_SERVER['QUERY_STRING']);
 
  // defines
  global $config;
  global $settings;
 
- $_SESSION['debug']=true;
- //$_SESSION['debug']=false;
+ $_SESSION['debug']=TRUE;
+ //$_SESSION['debug']=FALSE;
 
  // acquire variables
  $controller=$_REQUEST['controller'];
@@ -44,7 +46,6 @@
  define('VIEWS',ROOT."views/");
  define('CONTROLLERS',ROOT."controllers/");
  define('LANGUAGES',ROOT."languages/");
- //define('TEMPLATE',"templates/".$config['template']."/");
  define('TEMPLATE',"template/");
 
  // includes system classes
@@ -55,8 +56,9 @@
  // get settings from db
  //$settings="SELECT * FROM core_settings":
  // --- temporary manual settings setup ---
- $settings['fw-title']="Athena Knowledge Base";
- $settings['fw-version']="1.0";
+ $settings=new stdClass();
+ $settings->title="Athena Knowledge Base";
+ $settings->version="1.0.0";
 
  /*$settings['navigation']=array(
   array("home",URL),

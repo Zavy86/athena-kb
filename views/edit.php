@@ -3,11 +3,11 @@
  <input type="hidden" name="id" value="<?php echo $content->id; ?>">
 
  <div class="form-group">
-  <input type="text" name="title" class="form-control input-lg" placeholder="{title}" value="<?php echo $content->title; ?>">
+  <input type="text" name="title" class="form-control input-lg" placeholder="{edit-title}" value="<?php echo $content->title; ?>">
  </div>
 
  <div class="form-group">
-  <textarea name="content" id="content" class="form-control" placeholder="{content}" rows="20"><?php echo $content->title; ?></textarea>
+  <textarea name="content" id="content" class="form-control" placeholder="{edit-content}" rows="20"><?php echo $content->content; ?></textarea>
  </div>
 
  <div class="form-group">

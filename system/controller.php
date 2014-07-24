@@ -8,6 +8,9 @@ class Controller{
  }
 
  public function redirect($location){
+  $_SESSION['redirect']=TRUE;
+  $_SESSION['redirect_get']=$_GET;
+  $_SESSION['log'][]=array("log","Redirect to: ".$location."\n--------------------------------------------------");
   header("Location: ".URL.$location);
  }
 
@@ -26,8 +29,8 @@ class Controller{
   return $return;
  }
 
- public function loadView($name="main",$template="default"){
-  $view=new View($name,$template);
+ public function loadView($name="main"){
+  $view=new View($name);
   return $view;
  }
 

@@ -2,7 +2,7 @@
    <br><hr>
 
    <footer>
-    <p class="text-muted">Powered by <a href="http://www.athena-kb.org" target="_blank"><strong>Athena</strong> Knowledge Base</a></p>
+    <p class="text-muted">Powered by <a href="http://www.athena-kb.org" target="_blank"><strong>Athena</strong> Knowledge Base</a> v. <?php echo $settings->version; ?></p>
    </footer>
 
   </div> <!-- /container -->

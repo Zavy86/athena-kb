@@ -3,20 +3,11 @@
 class View{
 
  private $buffer;
- private $template;
  private $view;
- private $sections=array();
+ //private $sections=array();
  private $variables=array();
 
- public function __construct($view,$template){
-  // check if template exist
-  if(file_exists(ROOT.TEMPLATE.$template.".php")){
-   $_SESSION['log'][]=array("log","Template to load: ".$template);
-  }else{
-   $_SESSION['log'][]=array("warn","Template to load:'".ROOT.TEMPLATE.$template.".php' not found, load default template");
-   $template="default";
-  }
-  $this->template=ROOT.TEMPLATE.$template.".php";
+ public function __construct($view){
   // check if view exist
   if(file_exists(VIEWS.$view.".php")){
    $_SESSION['log'][]=array("log","View to load: ".VIEWS.$view.".php");
@@ -25,16 +16,14 @@ class View{
    $_SESSION['log'][]=array("error","View to load: ".VIEWS.$view.".php not found, load default view");
    $this->view=VIEWS."not-found.php";
   }
-
-  // --- load sections ---
+  /*// --- load sections ---
   global $settings;
-  $this->sections=$settings['sections'];
-
+  $this->sections=$settings['sections'];*/
  }
 
- public function setSection($section,$val){
+ /*public function setSection($section,$val){
   $this->sections[$section]=$val;
- }
+ }*/
 
  public function setVariable($variable,$val){
   $this->variables[$variable]=$val;

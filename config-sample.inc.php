@@ -1,10 +1,7 @@
 <?php
- 
- $config['url']="/athena-kb/"; // base url including trailing slash example: http://localhost/
 
- $config['template']="default";
-
- $config['default-module']=NULL; // define default module to load
+ // base url including trailing slash
+ $config['url']="/athena-kb/";
 
  // Database
  $config['db_type']="mysql";

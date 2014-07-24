@@ -4,7 +4,6 @@ class Model{
 
  private $connection;
 
-
  public function __construct(){
   global $config;
   try{
@@ -19,12 +18,10 @@ class Model{
   }
  }
 
-
  public function __call($method,$args){
   $args=implode(",",$args);
   $_SESSION['log'][]=array("warn","Method ".$method."(".$args.") was not found in ".get_class($this)." class");
  }
-
 
  public function queryObjects($sql,$debug){
   $_SESSION['log'][]=array("log","PDO queryObjects: ".$sql);
@@ -38,7 +35,6 @@ class Model{
   }
   return $return;
  }
-
 
  public function queryUniqueObject($sql,$debug){
   $sql.=" LIMIT 0,1";
@@ -54,7 +50,6 @@ class Model{
   return $return;
  }
 
-
  public function queryUniqueValue($sql,$debug){
   $sql.=" LIMIT 0,1";
   $_SESSION['log'][]=array("log","PDO queryUniqueValue: ".$sql);
@@ -68,7 +63,6 @@ class Model{
   }
   return $return;
  }
-
 
  public function queryInsert($table,$object){
   $sql="INSERT INTO `".$table."` (";
@@ -88,7 +82,6 @@ class Model{
   return $return;
  }
 
-
  public function queryUpdate($table,$object,$idKey="id"){
   $sql="UPDATE `".$table."` SET ";
   foreach(array_keys(get_object_vars($object)) as $key){
@@ -107,22 +100,6 @@ class Model{
   return $return;
  }
 
-
- public function queryDelete($table,$id,$idKey="id"){
-  $sql="DELETE FROM `".$table."` WHERE `".$idKey."`='".$id."'";
-  $_SESSION['log'][]=array("log","PDO queryDelete: ".$sql);
-  try{
-   $query=$this->connection->query($sql);
-   $_SESSION['log'][]=array("warn","PDO queryDelete: ".$query->rowCount()." rows deleted");
-   return TRUE;
-  }catch(PDOException $e){
-   $_SESSION['log'][]=array("error","PDO queryDelete: ".$e->getMessage());
-   $return=FALSE;
-  }
-  return $return;
- }
-
-
  public function count($table,$where=1){
   $sql="SELECT COUNT(*) FROM `".$table."` WHERE ".$where;
   $_SESSION['log'][]=array("log","PDO count: ".$sql);
@@ -134,6 +111,36 @@ class Model{
    $return=FALSE;
   }
   return $return;
+ }
+
+ public function execute($qry){
+  $exec=mysql_query($qry) or die('MySQL Error: '.mysql_error());
+  return $exec;
+ }
+
+ public function escapeString($string){
+  return mysql_real_escape_string($string);
+ }
+
+ public function escapeArray($array){
+  array_walk_recursive($array,create_function('&$v','$v = mysql_real_escape_string($v);'));
+  return $array;
+ }
+
+ public function to_bool($val){
+  return !!$val;
+ }
+
+ public function to_date($val){
+  return date('Y-m-d',$val);
+ }
+
+ public function to_time($val){
+  return date('H:i:s',$val);
+ }
+
+ public function to_datetime($val){
+  return date('Y-m-d H:i:s',$val);
  }
 
 }
